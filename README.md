@@ -312,6 +312,8 @@ hub:
 A tip is that you can first try if connection with your remote ldap server can be established by running commands like ```ping``` or ```ldapsearch```, but ldapsearch requires you to install ldap client first.
 
 ## MISC
+### Sample config file
+There are two sample config files under root directory, those are for your reference, for example, how each field should be typed or entered.
 ### Some common Commands/ cheatsheet
 #### Kubectl
 1. If rebooted master node, then kube services not going to restart run
