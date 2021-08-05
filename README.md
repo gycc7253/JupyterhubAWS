@@ -192,9 +192,166 @@ export KOPS_CLUSTER_NAME=mykubes.k8s.local
 kops export kubecfg
 ```
 
+## Jupyterhub in an Internet restricted environment
+There is no such documentation about setting up z2jh in an internet restricted environment, so I have explored both using kops and kubeadm to set up the cluster. I have gradually opened some sites to be accessed by firewall based on a few commands from kops, e.g. kops create cluster, kops upgrade etc. However, the sites that kops communicate with are from various sources which are hard to be tracked. Below I will provide a list of sites I know so far, with those sites enabled, you could create the cluster, but other commands remain unexamined.
+```
+https://raw.githubusercontent.com 
 
-### Deploy Jupyterhub
+https://kubeupv2.s3.amazonaws.com 
 
-### Configure via config.yaml
-### MISC
+https://artifacts.k8s.io 
 
+https://storage.googleapis.com 
+ 
+https://download.docker.com 
+
+https://hub.docker.com 
+
+https://jupyterhub.github.io 
+
+https://z2jh.jupyter.org 
+
+https://jupyter.org 
+
+```
+
+### Set up kubernetes
+1. Launch Centos 7 instances as master and worker nodes on AWS
+2. edit /etc/yum.repos.d/CentOS-Base.repo to include your own defined mirror sites so as to enable yum. Alternatively, you could use raw ways to install the tools required(e.g. by scp binary files onto the instance and make)
+3. Set up kubernetes and bootstrap using kubeadm, refer to:
+https://docs.genesys.com/Documentation/GCXI/latest/Dep/DockerOffline
+4. Install helm manually or by yum
+5. Download Jupyterhub Docker Image from https://hub.docker.com/r/jupyterhub/jupyterhub/tags?page=1&ordering=last_updated, recommended version: 0.9.1
+6. Find the values.yaml file in , and find all dependent images(e.g. hub, image puller, proxy), you could do this by searching for "image:"
+7. Download those images of correct tag and copy everything over to the offline machine
+8. Docker load all those images on all offline machines
+9. Create a config.yaml file on master node and generate a proxy secret just like the one in open internet
+10. Install Jupyterhub with command 
+```
+helm upgrade --cleanup-on-fail  jhub ./jupyterhub   --namespace jhub  --version=0.9.1 --values config2.yaml --debug --no-hooks
+```
+* The --no-hooks option disables helm to pull images from internet, since we already loaded the required images on the machine, it is able to run smoothly.
+* The --debug option allows you to print the whole log in command line, if anything goes wrong, you can locate the problem easily.
+* You may run with --disable-openapi-validation option to forbid helm to validate online
+* ./jupyterhub is the unzipped jupyterhub tar folder you downloaded previously
+11. When you edit the config.yaml file, you could update the running images with 
+```
+helm upgrade --cleanup-on-fail  jhub ./jupyterhub   --namespace jhub  --version=0.9.1 --values config2.yaml --debug --no-hooks
+```
+
+### Options
+1. Configure proxy address:
+* Since we manually join the cluster with kubeadm, there won't be any external IP if you are in a private VPC that forbids external IP, so you may want to use a private IP (ip address for your aws instance) as the access point for users.
+* Patch service: proxy-public’s external IP as proxy’s node cloud IP address 
+```
+kubectl patch svc proxy-public -p '{"spec":{"externalIPs":["xx.xx.xx.xx"]}}' -n jhub
+```
+* Expose the service to the IP using
+```
+kubectl expose service proxy-public --name=proxy-exposure --type=NodePort --port=80 
+--target-port=8000 -n jhub
+```
+Since you want to use aws instance ip + port 80 to access JupyterHub, you need to expose it such that the traffic from port 80 is directed to the proxy-public of JupyterHub
+
+### Persistent Volume
+There are two options that I have explored
+1. Use Sqlite-memory, config jupyterhub to use sqlite memory for both hub and user storage at the start. Eventually you may consider using some other forms of storage, but to get JupyterHub running, you could just use sqlite-memory first
+```
+hub:
+  db:
+    type: sqlite-memory
+singleuser:
+  storage:
+    type: sqlite-memory
+```
+2. Use an exported nfs share, for example, EFS(please refer to the section under open internet environment, they are the same), or some other forms of exported nfs.
+
+### System Maintenance
+1. Temporarily stop the instances and relaunch
+(1) Stop the instances(both master and worker nodes) in AWS cloud (not terminate)
+(2) Start instances when needed to use
+(3) In master, worker nodes run
+```
+sudo systemctl start kubelet
+sudo systemctl enable kubelet
+```
+
+## Authenticate your Jupyterhub with an LDAP server
+### Enable HTTPS
+Before any authenticator is used, you need to set up https for your JupyterHub. Basically you need to generate your own RSA key pair to be inserted into config file.
+```
+sudo openssl req -new -x509 -sha256 -days 365 -nodes -out /jhubCert/jhub.cer  -keyout /jhubCert/jhub.pem
+```
+the cert files will be located at the -out and -keyout options you specify, then modify the config.yaml to include those. After which a helm install is able to show the changes in your site.
+```
+proxy:
+  https:
+    enabled: true
+    type: manual
+    manual:
+      key: |
+        -----BEGIN RSA PRIVATE KEY-----
+        ...
+        -----END RSA PRIVATE KEY-----
+      cert: |
+        -----BEGIN CERTIFICATE-----
+        ...
+        -----END CERTIFICATE-----
+```
+### Configure ldap server address and bind_dn_template in config.yaml
+```
+hub:
+  config:
+    JupyterHub:
+      authenticator_class: ldapauthenticator.LDAPAuthenticator
+    LDAPAuthenticator:
+      bind_dn_template:
+        - uid={username},ou=xxx,o=xxx,dc=xxx,dc=xxx,dc=xxx
+      server_address: "YOUR LDAP SERVER ADDRESS WITHOUT QUOTATION MARK"
+```
+A tip is that you can first try if connection with your remote ldap server can be established by running commands like ```ping``` or ```ldapsearch```, but ldapsearch requires you to install ldap client first.
+
+## MISC
+### Some common Commands/ cheatsheet
+#### Kubectl
+1. If rebooted master node, then kube services not going to restart run
+* systemctl start kubelet
+* systemctl enable kubelet
+2. Kubectl get <resource-type> -n <namespace>
+3. Kubectl delete <resource-type> <resource-name> -n <namespace>
+4. Kubectl describe <resource-type> <resource-name> -n <namespace>
+5. Common resource types:
+* nodes
+* pods
+* services
+* pv
+* pvc
+* Storageclass
+6. Kubectl label
+7. Kubectl apply -f <filename> -n <Namespace>
+#### Kops:
+1. Kops create cluster
+2. Kops get cluster
+3. Kops get <Cluster-name>
+4. Kops get ig
+5. Kops edit ig <IG-name>
+#### Kubeadm:
+1. kubeadm token create --print-join-command
+2. Kubeadm init
+3. Kubeadm join
+#### Helm:
+1. Apply new config file to helm
+* helm upgrade --cleanup-on-fail  jhub jupyterhub/jupyterhub   	--namespace jhub  --version=0.11.1 --values config.yaml (replace 	version, config file name and namespace)
+2. Helm show past revision:
+* helm history jhub -n jhub --kube-context mykubes.k8s.local
+3. Helm rollback to a previous revision designated
+* helm rollback jhub <REVISION-NUMBER> -n jhub --kube-context 	mykubes.k8s.local
+
+
+## Notes to pay attention to
+1. No second node can have same instance type as master node. Since master node is t2 instance type, then both spot-ig and spot-ig-2 can’t be assigned with t2 related instance type
+2. The limit to guarentee ratio can be first set to 2:1, then adjust based on performance
+3. Use on-demand with spot instance groups, reserve instances are not preferred due to the variable nature of jupyterhub
+4. Possible implementation size:
+* Actual nodes size to be r5n.2xlarge and g4dn.12xlarge
+* soft limite cpu: 2-4 cores memory: 16 - 32 GB

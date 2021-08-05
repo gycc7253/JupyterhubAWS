@@ -1,0 +1,84 @@
+proxy:
+  secretToken: "280ea99cc8a5a4dbbd77514faf58cb1218ecf828ca4c30b251669f3e4eaf8257"
+  service:
+    type: ClusterIP
+  https:
+    enabled: true
+    type: manual
+    manual:
+      key: |
+        -----BEGIN PRIVATE KEY-----
+        MIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQDMRxBjF/okkVSS
+        HyuHna7DrABUpvS09G1Cf/5bhKRu2Hwy9TB+aM9U47eXocd8JFkdeebG0JxKR1cG
+        riU4WWmTiLbzo3TbmG29PuietHtpptz7kqoCLQ3eEYBAGAymfM8+x1U03lBcPTTv
+        KRMJm9YFtd4O1KXwGqsLa/EntYNEvDohrw+uGh3BFq1qq3u0hb3ku+4upQcoUUSy
+        klUf/Bh3FvZDxfaPx/erpxJaK7w4CRCJlSggAAr7iCzOBUraJjYZ//FgWXeA/lZl
+        ZNQLaf7kcTGIwmOtw/BzXPMI7X5aaYY7OPUD+AAX8++4eZOH0PEvl7CX0K6hTJF0
+        qgf6SC6/AgMBAAECggEAbKrVFdHYeIFzGrRIJMGGCYNDPcT+4hAw2zJZbffWvTye
+        fUEfhe9dc8wbiyc9hlWTrnF9iX/J1F209tHG7P3rgtc0c9EdRgAFSKnhdyONjzt7
+        zLxNghDTkrF+pxnkCODWIpBJTHGDED5jHWKdRPxIUwtXUE5g46RcHxxR0gzmAran
+        BksOzPJLC6lF0ImYyd8GwTYeZqDyEHq4G1bweHAAxnBbW+8SUGu5yMrAveWmtaec
+        aPL9HtXGojiBBcH9en9gv/cVz4AOG5Kj6W+7N0XaPGqAp7jUqQWJwngUpQqv54VS
+        RgQWccJLOj5oJ5p6vDjHca0NT5VUc03Fvh+0F8u+2QKBgQDyLKBfJmbGBQLZus5H
+        Gww5lf/5oIVCjUG/s89+Q16v7wHEBZr8a8PUo1QVzR4+/UFs4cXTGOdj8zR7O7n/
+        2ArWopxcVQ39X9n7ijJBv2MntyDPPIItc9RmliT3z1GU6Xgy5+PgxAqXl/ofNZW+
+        XO5P5uaivPFibSsT7ArAT5fF1QKBgQDX8JPY7I5t6xXOV7chJPbV8DGSSQfvTWM9
+        jAxHQFvt0aiyeNXkQT26CcCKZDj6PC4U1jrGWp3dwpi1f4DSat0WaHY6UROdO1vE
+        6TmwfdG9RrNll92i3hSObJIJENSsg7l39Ri7D/q03uyDarCmN+h0mwo//u++7Sxq
+        nIiAEn3IQwKBgDEGTbTVXkrJ6ujOw0FrvU7PCdGr6C4v0FaRfPivhLSS6sWW6Oge
+        nLcoFTaQnoXb2OnEzrpMOVNngYFM9vtO7erDYmniogFf7Q3ZzRC4QMdicBbjxeqT
+        nzThQjyUUIyXssiDXwM6THahwnWc8GJoB6pPMPNS0n69YNIYn5iMxEm9AoGANavN
+        A5CgQf+5NsUkdi96zmfZ2lMejsL8VJLXhmofrzd6J4nTF92DWxcLbRpF8yQ8C9/H
+        Uf+51yGD1TCwsxvugaBLKml2Z5EWWRXiydQr6lCFTE33v4BVOaUQkwJE6e//jCo2
+        EGCDXqs9u9grudSRiVHztT5HFnxamtD3OGXgL4MCgYA09yndzLLTncgPyxnCZgA0
+        0koVynPq+3emL2f1Mb7B8dd24VtgXnKxidTVyQxgXOiWCaJiv/Lr3D/YTTbQQxUJ
+        /SmSIgDU35+ZavOYukk1j9u7xb2rvF7mmfMiK82GCaO0UPJbhVjIRrKz6u3pkdNW
+        v9Du+zON2ZX9R+T6gXPF2g==
+        -----END PRIVATE KEY-----
+      cert: |
+        -----BEGIN CERTIFICATE-----
+        MIID8TCCAtmgAwIBAgIUcaGAcGuaMvzbTr/vKFKao9ONZUcwDQYJKoZIhvcNAQEL
+        BQAwgYcxCzAJBgNVBAYTAlNHMRIwEAYDVQQIDAlTaW5nYXBvcmUxEjAQBgNVBAcM
+        CVNpbmdhcG9yZTEMMAoGA1UECgwDaHBjMREwDwYDVQQLDAhyZXNlYXJjaDENMAsG
+        A1UEAwwEZ3ljYzEgMB4GCSqGSIb3DQEJARYRZ3VvNzI1M0BnbWFpbC5jb20wHhcN
+        MjEwNjE0MDYyNjQ0WhcNMjIwNjE0MDYyNjQ0WjCBhzELMAkGA1UEBhMCU0cxEjAQ
+        BgNVBAgMCVNpbmdhcG9yZTESMBAGA1UEBwwJU2luZ2Fwb3JlMQwwCgYDVQQKDANo
+        cGMxETAPBgNVBAsMCHJlc2VhcmNoMQ0wCwYDVQQDDARneWNjMSAwHgYJKoZIhvcN
+        AQkBFhFndW83MjUzQGdtYWlsLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCC
+        AQoCggEBAMxHEGMX+iSRVJIff4edrsOsAFSm9LT0bUJ//luEpG7YfDL1MH5oz1Tj
+        t5ehx3wkWR155sbQnEpHVwauJThZaZOItvOjdNuYbb0+6J60e2mm3PuSqgItDd4R
+        gEAYDKZ8zz7HVTTeUFw9NO8pEwmb1gW13g7UpfAaqwtr8Se1g0S8OiGvD64aHcEW
+        rWqre7SFveS77i6lByhRRLKSVR/8GHcW9kPF9o/H96unElorvDgJEImVKCAACvuI
+        LM4FStomNhn/8WBZd4D+VmVk1Atp/uRxMYjCY63D8HNc8wjtflpphjs49QP4ABfz
+        77h5k4fQ8S+XsJfQrqFMkXSqB/pILr8CAwEAAaNTMFEwHQYDVR0OBBYEFLVyWr6v
+        bLTQPBAYbcOc9hJwXPxKMB8GA1UdIwQYMBaAFLVyWr6vbLTQPBAYbcOc9hJwXPxK
+        MA8GA1UdEwEB/wQFMAMBAf8wDQYJKoZIhvcNAQELBQADggEBADoVgM/zSpR3vcNK
+        CLTtCCxLRJuDo2VBwQWjYKEvGph5YplMYNJ8NUzGMlfS8nCit+3ws/pb3vxmrusK
+        CrygnbfvLAn0IWZDxXi1gafAxYRMdNnV7t0l/Y//scjKhvnLZgok6yDiual8jD8k
+        pagftt10HMvhDG7VkJlxFFOY4M82Bz3XFH3yEc3MMCmCl3iptz8mdeI58bHlXaKH
+        jvpzpNmmBFm+nqQ0nprYDX5Sj23sopoSL+mtocO5isCWewQg0RhhCetBE7rVs48f
+        k3Ayzuyl9fwXjwQbOK0sBNHnx7hOYEH1w5FKmFoNyi1PjnK4s03VfmHV4UIsWGVa
+        fqyl1KI=
+        -----END CERTIFICATE-----
+hub:
+  config:
+    JupyterHub:
+      bind_url: 'https://:8000'
+      authenticator_class: ldapauthenticator.LDAPAuthenticator
+    LDAPAuthenticator:
+      bind_dn_template:
+        - uid={username},ou=user,o=abc,dc=ap-southeast-1,dc=internal
+      server_address: 22.22.22.22
+  #db:
+  #  type: sqlite-memory
+singleuser:
+  storage:
+    type: "static"
+    static:
+      pvcName: "efs-persist"
+      subPath: 'home/{username}'
+  extraEnv:
+    CHOWN_HOME: 'yes'
+  uid: 0
+  fsGid: 0
+  cmd: "start-singleuser.sh"
